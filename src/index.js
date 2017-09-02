@@ -13,6 +13,7 @@ import Login from './Login';
 import appReducer from './reducers';
 import { getUserInfo } from './cognito';
 import { setUserInfo } from './actions';
+import getEcho from './services/echo';
 
 const routeConfig = [
   {
@@ -73,6 +74,13 @@ ReactDOM.render(
 getUserInfo()
   .then((userInfo) => {
     store.dispatch(setUserInfo(userInfo));
+    getEcho()
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);        
+      });
   })
   .catch((error) => {
     console.log(error);

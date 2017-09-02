@@ -33,6 +33,23 @@ export const getUserInfo = () => {
   });
 };
 
+export const getAuthorization = () => {
+  return new Promise((resolve, reject) => {
+    const cognitoUser = userPool.getCurrentUser();
+    if (!cognitoUser) {
+      reject(new Error('No recent login user'));
+      return;
+    }
+    cognitoUser.getSession((error, session) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(session.getIdToken().getJwtToken());
+    });
+  });  
+};
+
 export const authenticateUser = (name, pass) => {
   const authenticationData = {
     Username : name,
