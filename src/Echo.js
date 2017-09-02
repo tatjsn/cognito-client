@@ -5,7 +5,11 @@ const Echo = (props) => (
   <div>
     <h2>Echo</h2>
     <p>
-      {JSON.stringify(props.echo)}
+      {
+        props.echo.error ?
+          props.echo.error.message :
+          JSON.stringify(props.echo)
+      }
     </p>
   </div>
 );
