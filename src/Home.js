@@ -7,9 +7,9 @@ const Home = (props) => (
     <h2>Home</h2>
     <p>
       {
-        props.userInfo.jwt ?
-          <span>Hello login user!</span> :
-          <Link to="/login">Sign in</Link>
+        props.userInfo['cognito:username'] ?
+          <span>Hello {props.userInfo['cognito:username']}!</span> :
+          <Link to="/login">Sign in {JSON.stringify(props.userAttr)}</Link>
       }
     </p>
   </div>

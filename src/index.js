@@ -4,13 +4,15 @@ import { Actions as FarceActions, BrowserProtocol, createHistoryEnhancer, queryM
 import { Matcher, foundReducer, createMatchEnhancer, createConnectedRouter, createRender, resolver } from 'found';
 import { combineReducers, compose, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import thunkMiddleware from 'redux-thunk'
+import thunkMiddleware from 'redux-thunk';
 
 import './index.css';
 import App from './App';
 import Home from './Home';
 import Login from './Login';
 import appReducer from './reducers';
+import { getUserInfo } from './cognito';
+import { setUserInfo } from './actions';
 
 const routeConfig = [
   {
@@ -67,3 +69,11 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 );
+
+getUserInfo()
+  .then((userInfo) => {
+    store.dispatch(setUserInfo(userInfo));
+  })
+  .catch((error) => {
+    console.log(error);
+  });

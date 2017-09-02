@@ -6,6 +6,7 @@
     "amazon-cognito-identity-js": "^1.19.0",
     "farce": "^0.2.1",
     "found": "^0.3.3",
+    "jwt-decode": "^2.2.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.6",

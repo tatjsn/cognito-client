@@ -3,6 +3,7 @@ import {
   CognitoUserPool,
   CognitoUser
 } from 'amazon-cognito-identity-js';
+import jwtDecode from 'jwt-decode';
 
 const poolData = {
   UserPoolId : 'ap-northeast-1_MPxjfmsWE', // Your user pool id here
@@ -10,7 +11,29 @@ const poolData = {
 };
 const userPool = new CognitoUserPool(poolData);
 
-export default (name, pass) => {
+const getUserInfoFromSession = (session) => {
+  const jwtToken = session.getIdToken().getJwtToken()
+  return jwtDecode(jwtToken);
+}
+
+export const getUserInfo = () => {
+  return new Promise((resolve, reject) => {
+    const cognitoUser = userPool.getCurrentUser();
+    if (!cognitoUser) {
+      reject(new Error('No recent login user'));
+      return;
+    }
+    cognitoUser.getSession((error, session) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(getUserInfoFromSession(session));
+    });
+  });
+};
+
+export const authenticateUser = (name, pass) => {
   const authenticationData = {
     Username : name,
     Password : pass,
@@ -24,8 +47,8 @@ export default (name, pass) => {
 
   return new Promise((resolve, reject) => {
     cognitoUser.authenticateUser(authenticationDetails, {
-      onSuccess: function (result) {
-        resolve(result.getIdToken().getJwtToken());
+      onSuccess: function (session) {
+        resolve(getUserInfoFromSession(session));
       },
     
       onFailure: function(err) {
