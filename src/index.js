@@ -34,11 +34,9 @@ const routeConfig = [
         getData: ({ context }) => {
           getEcho()
             .then((echo) => {
-              console.log('getEcho succeed');
               context.store.dispatch(setEcho(echo));
             })
             .catch((error) => {
-              console.log('getEcho failed', error.message);
               context.store.dispatch(setEcho({ error }));
             })
         },
