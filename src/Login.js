@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'found';
-import { connect } from 'react-redux'
-import { login } from './actions';
+
+import { authenticateUser } from './cognito';
 
 class Login extends React.Component {
   constructor(props) {
@@ -9,11 +9,14 @@ class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
+      error: null,
     };
 
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
+    this.handleLoginError = this.handleLoginError.bind(this);
   }
 
   handleUsernameChange(event) {
@@ -26,7 +29,17 @@ class Login extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.dispatch(login(this.state.username, this.state.password));
+    authenticateUser(this.state.username, this.state.password)
+      .then(this.handleLoginSuccess)
+      .catch(this.handleLoginError);
+  }
+
+  handleLoginSuccess() {
+    this.props.router.push('/');
+  }
+
+  handleLoginError(error) {
+    this.setState({ error });
   }
 
   render() {
@@ -53,7 +66,7 @@ class Login extends React.Component {
           <button type="submit">Submit</button>
           <Link to="/">Back to home</Link>
           {
-            this.props.loginError.error ? <p>{this.props.loginError.error.message}</p> : null
+            this.state.error ? <p>{this.state.error.message}</p> : null
           }
         </form>
       </div>
@@ -61,7 +74,4 @@ class Login extends React.Component {
   }
 }
 
-export default connect((state) => {
-  const { loginError } = state.app;
-  return { loginError };
-})(Login);
+export default Login;
