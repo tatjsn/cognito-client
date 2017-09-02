@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'found';
+import { connect } from 'react-redux'
 
 import { authenticateUser } from './cognito';
+import { setUserInfo } from './actions';
 
 class Login extends React.Component {
   constructor(props) {
@@ -34,8 +35,9 @@ class Login extends React.Component {
       .catch(this.handleLoginError);
   }
 
-  handleLoginSuccess() {
+  handleLoginSuccess(userInfo) {
     this.props.router.push('/');
+    this.props.dispatch(setUserInfo(userInfo));
   }
 
   handleLoginError(error) {
@@ -50,7 +52,7 @@ class Login extends React.Component {
           <dl>
             <dt>
               Username
-          </dt>
+            </dt>
             <dd>
               <input type="text" value={this.state.username} onChange={this.handleUsernameChange} />
             </dd>
@@ -58,13 +60,12 @@ class Login extends React.Component {
           <dl>
             <dt>
               Password
-          </dt>
+            </dt>
             <dd>
               <input type="password" value={this.state.password} onChange={this.handlePasswordChange} />
             </dd>
           </dl>
           <button type="submit">Submit</button>
-          <Link to="/">Back to home</Link>
           {
             this.state.error ? <p>{this.state.error.message}</p> : null
           }
@@ -74,4 +75,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default connect()(Login);

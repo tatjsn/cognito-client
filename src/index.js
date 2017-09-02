@@ -10,9 +10,10 @@ import './index.css';
 import App from './App';
 import Home from './Home';
 import Login from './Login';
+import Echo from './Echo';
 import appReducer from './reducers';
 import { getUserInfo } from './cognito';
-import { setUserInfo } from './actions';
+import { setUserInfo, setEcho } from './actions';
 import getEcho from './services/echo';
 
 const routeConfig = [
@@ -26,6 +27,21 @@ const routeConfig = [
       {
         path: 'login',
         Component: Login,
+      },
+      {
+        path: 'echo',
+        Component: Echo,
+        getData: ({ context }) => {
+          getEcho()
+            .then((echo) => {
+              console.log('getEcho succeed');
+              context.store.dispatch(setEcho(echo));
+            })
+            .catch((error) => {
+              console.log('getEcho failed', error.message);
+              context.store.dispatch(setEcho({ error }));
+            })
+        },
       }
     ]
   }
@@ -66,7 +82,7 @@ const ConnectedRouter = createConnectedRouter({
 
 ReactDOM.render(
   <Provider store={store}>
-    <ConnectedRouter resolver={resolver} />
+    <ConnectedRouter resolver={resolver} matchContext={{ store }}/>
   </Provider>,
   document.getElementById('root')
 );
@@ -74,13 +90,6 @@ ReactDOM.render(
 getUserInfo()
   .then((userInfo) => {
     store.dispatch(setUserInfo(userInfo));
-    getEcho()
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.log(error);        
-      });
   })
   .catch((error) => {
     console.log(error);

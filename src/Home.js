@@ -12,6 +12,9 @@ const Home = (props) => (
           <Link to="/login">Sign in {JSON.stringify(props.userAttr)}</Link>
       }
     </p>
+    <p>
+      <Link to="/echo">Test auth API</Link>    
+    </p>
   </div>
 );
 

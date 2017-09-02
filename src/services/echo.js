@@ -8,5 +8,10 @@ export default () => getAuthorization()
       'Authorization': auth,
     });
     return fetch(url, { headers })
-      .then(res => res.json());
+      .then((res) => {
+        if (res.status !== 200) {
+          throw new Error(`Invalid status: ${res.status}`);
+        }
+        return res.json();
+      });
   });
